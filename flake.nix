@@ -24,7 +24,7 @@
 
 			buildInputs = with pkgs; [
 				# BUILD TOOLS #
-				dotnet-sdk
+				dotnet-sdk_10
 
 				# LIBRARIES #
 			];
