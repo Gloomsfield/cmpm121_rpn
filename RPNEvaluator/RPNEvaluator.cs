@@ -11,6 +11,14 @@ namespace RPNEvaluator {
 			["/"] = (a, b) => { return b / a; },
 			["%"] = (a, b) => { return b % a; },
 		};
+
+		private static Dictionary<string, Func<float, float, float>> operations_float = new Dictionary<string, Func<float, float, float>>() {
+			["+"] = (a, b) => { return b + a; },
+			["-"] = (a, b) => { return b - a; },
+			["*"] = (a, b) => { return b * a; },
+			["/"] = (a, b) => { return b / a; },
+			["%"] = (a, b) => { return b % a; },
+		};
 	
 		public static int Evaluate(string input, Dictionary<string, int> variables) {
 			string[] tokens = input.Split(' ');
@@ -36,8 +44,53 @@ namespace RPNEvaluator {
 			return res.Pop();
 		}
 	
-		public static float Evaluatef(string input, Dictionary<string, float> variables) { return 0.0F; }
-		public static float Evaluatef(string input, Dictionary<string, int> variables) { return 0.0F; }
+		public static float Evaluatef(string input, Dictionary<string, float> variables) {
+			string[] tokens = input.Split(' ');
+	
+			Stack<float> res = new Stack<float>();
+	
+			foreach(string token in tokens) {
+				if(operations_float.TryGetValue(token, out Func<float, float, float> f)) {
+					res.Push(f(res.Pop(), res.Pop()));
+					continue;
+				}
+	
+				if(float.TryParse(token, out float v_1)) {
+					res.Push(v_1);
+					continue;
+				}
+	
+				if(variables.TryGetValue(token, out float v_2)) {
+					res.Push(v_2);
+				}
+			}
+	
+			return res.Pop();
+		}
+
+		public static float Evaluatef(string input, Dictionary<string, int> variables) {
+			string[] tokens = input.Split(' ');
+	
+			Stack<float> res = new Stack<float>();
+	
+			foreach(string token in tokens) {
+				if(operations_float.TryGetValue(token, out Func<float, float, float> f)) {
+					res.Push(f(res.Pop(), res.Pop()));
+					continue;
+				}
+	
+				if(float.TryParse(token, out float v_1)) {
+					res.Push(v_1);
+					continue;
+				}
+	
+				if(variables.TryGetValue(token, out int v_2)) {
+					res.Push(v_2);
+				}
+			}
+	
+			return res.Pop();
+		}
 	}
 }
 
