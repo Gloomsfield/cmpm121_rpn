@@ -48,6 +48,53 @@ namespace RPNEvaluator.Tests {
 
 			Assert.Equal(expected, result, 4);
 		}
+
+		[Theory]
+		[InlineData("test-1 test-2 + 5 *", new string[] {"test-1", "test-2"}, new int[] {1, 4}, 2, 25)]
+		[InlineData("5 6 9 + foo - -", new string[] {"foo", "bar"}, new int[] {1, 2}, 2, -9)]
+		[InlineData("bar bar + foo +", new string[] {"foo", "bar", "baz"}, new int[] {0, -5, 999}, 3, -10)]
+		public void TestFormulaIntInt(string formula, string[] keys, int[] values, int length, float expected) {
+			Dictionary<string, int> variables = new Dictionary<string, int>();
+
+			for(int i = 0; i < length; i++) {
+				variables.Add(keys[i], values[i]);
+			}
+
+			var result = RPNEvaluator.Evaluate(formula, variables);
+
+			Assert.Equal(expected, result);
+		}
+
+		[Theory]
+		[InlineData("test-1 test-2 + 5.0 *", new string[] {"test-1", "test-2"}, new float[] {1, 4}, 2, 25.0F)]
+		[InlineData("5.0 6.0 9.0 + foo - -", new string[] {"foo", "bar"}, new float[] {1, 2}, 2, -9)]
+		[InlineData("bar bar + foo +", new string[] {"foo", "bar", "baz"}, new float[] {0, -5, 999}, 3, -10.0F)]
+		public void TestFormulaFloatInt(string formula, string[] keys, float[] values, int length, float expected) {
+			Dictionary<string, float> variables = new Dictionary<string, float>();
+
+			for(int i = 0; i < length; i++) {
+				variables.Add(keys[i], values[i]);
+			}
+
+			var result = RPNEvaluator.Evaluatef(formula, variables);
+
+			Assert.Equal(expected, result, 4);
+		}
+		[Theory]
+		[InlineData("test-1 test-2 + 5.0 *", new string[] {"test-1", "test-2"}, new float[] {1.0F, 4.0F}, 2, 25.0F)]
+		[InlineData("5.0 6.0 9.0 + foo - -", new string[] {"foo", "bar"}, new float[] {1.0F, 2.0F}, 2, -9.0F)]
+		[InlineData("bar bar + foo +", new string[] {"foo", "bar", "baz"}, new float[] {0.0F, -5.0F, 999.0F}, 3, -10.0F)]
+		public void TestFormulaFloatFloat(string formula, string[] keys, float[] values, int length, float expected) {
+			Dictionary<string, float> variables = new Dictionary<string, float>();
+
+			for(int i = 0; i < length; i++) {
+				variables.Add(keys[i], values[i]);
+			}
+
+			var result = RPNEvaluator.Evaluatef(formula, variables);
+
+			Assert.Equal(expected, result, 4);
+		}
 	}
 }
 
